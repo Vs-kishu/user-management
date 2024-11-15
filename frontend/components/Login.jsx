@@ -10,6 +10,7 @@ function Login() {
     try {
       const response = await login({ username, password });
         const userData = { ...response.data.user, token: response.data.token };
+        console.log(response);
         console.log(userData);
         if(userData){
           localStorage.setItem(
@@ -21,7 +22,6 @@ function Login() {
               username: userData.username,
             })
           );
-          window.location.reload()
 
         }
         localStorage.setItem("user", 'ksihan')
