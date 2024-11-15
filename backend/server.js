@@ -30,9 +30,6 @@ app.use(cors(corsOptions));
 
 app.use(morgan("dev"));
 
-app.use("/", (req, res) => {
-  res.send("Welcome");
-});
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
