@@ -3,23 +3,37 @@ const User = require("./models/user");
 const mongoose = require("mongoose");
 
 const initSocket = (server) => {
-  const io = socketIO(server, { cors: { origin: "*" } });
+  const io = socketIO(server, {
+    cors: {
+      origin: [
+        "https://user-management-7t5g.vercel.app",
+        "http://localhost:5173",
+      ], // Allow both localhost and production
+      methods: ["GET", "POST", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+      allowedHeaders: ["Content-Type"],
+      credentials: true,
+    },
+  });
 
   io.on("connection", (socket) => {
     console.log("New client connected");
 
     const userId = socket.handshake.query.userId;
-    
+
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
       console.error("Invalid or missing userId on connection:", userId);
-      socket.disconnect(); 
+      socket.disconnect();
       return;
     }
 
     // Set user status to active when they connect
     const setActiveStatus = async () => {
       try {
-        const user = await User.findByIdAndUpdate(userId, { isActive: true }, { new: true });
+        const user = await User.findByIdAndUpdate(
+          userId,
+          { isActive: true },
+          { new: true }
+        );
         if (user) {
           io.emit("updateUserStatus", { userId: user._id, isActive: true });
         }
@@ -32,10 +46,10 @@ const initSocket = (server) => {
 
     socket.on("getRank", async () => {
       try {
-        const rankData = await User.find({ role: { $ne: 'admin' } })
+        const rankData = await User.find({ role: { $ne: "admin" } })
           .sort({ bananaClickCount: -1 })
           .select("username bananaClickCount");
-        socket.emit("updateRank", rankData); 
+        socket.emit("updateRank", rankData);
       } catch (err) {
         console.error("Error fetching rank data:", err);
       }
@@ -47,7 +61,7 @@ const initSocket = (server) => {
         if (user) {
           if (user.isBlocked) {
             socket.emit("userBlocked");
-            return; 
+            return;
           }
 
           // Increase the banana click count and update the user
@@ -55,7 +69,7 @@ const initSocket = (server) => {
           await user.save();
 
           // Emit updated rank
-          const updatedRankData = await User.find({ role: { $ne: 'admin' } })
+          const updatedRankData = await User.find({ role: { $ne: "admin" } })
             .sort({ bananaClickCount: -1 })
             .select("username bananaClickCount isActive isBlocked");
           io.emit("updateRank", updatedRankData);
@@ -75,7 +89,11 @@ const initSocket = (server) => {
         const user = await User.findById(userId);
         if (user) {
           // Only update the user status to false if they are disconnected (no active connection)
-          await User.findByIdAndUpdate(userId, { isActive: false }, { new: true });
+          await User.findByIdAndUpdate(
+            userId,
+            { isActive: false },
+            { new: true }
+          );
           io.emit("updateUserStatus", { userId: user._id, isActive: false });
         }
       } catch (err) {
