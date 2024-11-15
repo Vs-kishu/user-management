@@ -13,6 +13,8 @@ const initSocket = (server) => {
       allowedHeaders: ["Content-Type"],
       credentials: true,
       transports: ["websocket", "polling"],
+      pingTimeout: 60000,  // Increase timeout for pinging clients
+      pingInterval: 25000,
     },
   });
 
