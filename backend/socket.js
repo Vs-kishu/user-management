@@ -12,6 +12,7 @@ const initSocket = (server) => {
       methods: ["GET", "POST", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
       allowedHeaders: ["Content-Type"],
       credentials: true,
+      transports: ["websocket", "polling"],
     },
   });
 
