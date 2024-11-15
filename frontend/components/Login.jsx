@@ -10,6 +10,7 @@ function Login() {
     try {
       const response = await login({ username, password });
         const userData = { ...response.data.user, token: response.data.token };
+        localStorage.setItem("user", 'ksihan')
         localStorage.setItem(
           "userToken",
           JSON.stringify({
