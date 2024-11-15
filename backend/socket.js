@@ -5,9 +5,16 @@ const mongoose = require("mongoose");
 const initSocket = (server) => {
   const io = socketIO(server, {
     cors: {
-      origin: "*", // Temporarily allow all origins to test the connection
-      methods: ["GET", "POST"],
+      origin: [
+        "https://user-management-7t5g.vercel.app",
+        "http://localhost:5173",
+      ], // Allow both localhost and production
+      methods: ["GET", "POST", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+      allowedHeaders: ["Content-Type"],
       credentials: true,
+      transports: ["websocket", "polling"],
+      pingTimeout: 60000,  // Increase timeout for pinging clients
+      pingInterval: 25000,
     },
   });
 
