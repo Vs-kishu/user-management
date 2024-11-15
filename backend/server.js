@@ -21,13 +21,20 @@ initSocket(server);
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-  })
-);
+const corsOptions = {
+  origin: ['http://localhost:5173'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+};
+
+app.use(cors(corsOptions)); 
+
+
 
 app.use(morgan("dev"));
+
+app.use('/',(req,res)=>{
+  res.send('Welcome')
+})
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
