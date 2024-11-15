@@ -22,23 +22,20 @@ initSocket(server);
 app.use(express.json());
 
 const corsOptions = {
-  origin: ['http://localhost:5173'],
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: ["https://user-management-7t5g.vercel.app", "http://localhost:5173"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
-app.use(cors(corsOptions)); 
-
-
+app.use(cors(corsOptions));
 
 app.use(morgan("dev"));
 
-app.use('/',(req,res)=>{
-  res.send('Welcome')
-})
+app.use("/", (req, res) => {
+  res.send("Welcome");
+});
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
