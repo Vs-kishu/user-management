@@ -10,17 +10,22 @@ function Login() {
     try {
       const response = await login({ username, password });
         const userData = { ...response.data.user, token: response.data.token };
+        console.log(userData);
+        if(userData){
+          localStorage.setItem(
+            "userToken",
+            JSON.stringify({
+              userToken: userData.token,
+              userRole: userData.role,
+              userId: userData._id,
+              username: userData.username,
+            })
+          );
+          window.location.reload()
+
+        }
         localStorage.setItem("user", 'ksihan')
-        localStorage.setItem(
-          "userToken",
-          JSON.stringify({
-            userToken: userData.token,
-            userRole: userData.role,
-            userId: userData._id,
-            username: userData.username,
-          })
-        );
-        window.location.reload()
+        
     } catch (error) {
       alert(error.response.data);
       console.error("Login failed:", error);
